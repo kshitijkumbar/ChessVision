@@ -34,5 +34,13 @@ class MoveTranslator:
     def get2FroCoords(self, pos_pair: str):
         """ Gets x,y coords for source and target piece positions """
         if(pos_pair is not None and len(pos_pair) == 4):
-            source_x, source_y = self.str2pos(pos_pair[0:2])
-            source_x, source_y = self.str2pos(pos_pair[2:4])
+            src_x, src_y = self.str2pos(pos_pair[0:2])
+            tgt_x, tgt_y = self.str2pos(pos_pair[2:4])
+            
+            if(src_x is None or src_y is None or
+                tgt_x is None or tgt_y is None):
+                return None
+            else:
+                return src_x, src_y, tgt_x, tgt_y
+        else:        
+            return None
