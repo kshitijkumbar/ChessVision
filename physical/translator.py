@@ -3,13 +3,36 @@ import pyfirmata
 import time
 
 class MoveTranslator:
-    def  __init__(self, board_width: float, board_length: float) -> None:
+    """Class for tranlating chess positional moves to actual motor movement"""
+
+    def  __init__(self, board_width: float) -> None:
         self.board_width    = board_width
-        self.board_length   = board_length
     
 
     def calibratePos(self):
+        """ Run calibration routine to get board physical dims """
         self.board_width    = self.getWidth()
-        self.board_length   = self.getLength()
+        self.square_dim     = self.board_width /8.0 # Chessboard has 8x8 struct
 
+    def str2pos(self, pos: str):
+        """ Convert positon string to machine understandable integer x,y coords """
+        if pos is not None:
+            char_val    = ord(pos[0]) - ord('a') # Getting charater int relative to letter 'a'
+            num_val     = int(pos[1])
 
+            if char_val > 7 or char_val < 0 or num_val < 1 or num_val > 8:
+                return None
+
+            x_coord     = (char_val + 1) * self.square_dim # +1 to 1 index the val
+            y_coord     = (num_val) * self.square_dim
+
+            return x_coord, y_coord
+        
+        else:
+
+            return None
+    def get2FroCoords(self, pos_pair: str):
+        """ Gets x,y coords for source and target piece positions """
+        if(pos_pair is not None and len(pos_pair) == 4):
+            source_x, source_y = self.str2pos(pos_pair[0:2])
+            source_x, source_y = self.str2pos(pos_pair[2:4])
